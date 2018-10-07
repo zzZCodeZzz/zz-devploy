@@ -11,8 +11,20 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
 
+---
 
+spring:
+  profiles: local
+  datasource:
+      url: jdbc:postgresql://localhost:5433/zzdevploy
+      username: postgres
+      password: mysecretpassword
 
+---
 
-
-
+spring:
+  profiles: dev
+  datasource:
+      url: jdbc:postgresql://fuhrpark.zz-dev.de:5433/zzdevploy
+      username: postgres
+      password: mysecretpassword
