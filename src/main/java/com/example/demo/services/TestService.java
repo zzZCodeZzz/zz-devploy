@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.model.RepoEntity;
+import com.example.demo.repositories.RepoEntityRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +14,18 @@ import java.io.IOException;
 @Slf4j
 public class TestService {
 
-    public void doDeployChain(String json) {
+    private final RepoEntityRepository repoEntityRepository;
+
+    public TestService(RepoEntityRepository repoEntityRepository) {
+        this.repoEntityRepository = repoEntityRepository;
+    }
+
+    public void doDeployChain(String repoName, String json) {
+
+        File tmpFile;
 
         try {
-            File tmpFile = File.createTempFile("TMP", "JSON");
+            tmpFile = File.createTempFile("TMP", "JSON");
             BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile));
             bw.write(json);
             bw.close();
@@ -28,6 +38,13 @@ public class TestService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
+        RepoEntity repoEntity =  repoEntityRepository.findByRepoName(repoName);
+
+        String scriptAsString = repoEntity.getScript();
+
+
 
 
     }

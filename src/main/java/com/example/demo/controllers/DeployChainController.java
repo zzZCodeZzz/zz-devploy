@@ -17,11 +17,13 @@ public class DeployChainController {
 
 
     @RequestMapping(
-            value = "/run",
+            value = "/{repoName}",
             method = RequestMethod.POST)
-    private ResponseEntity<?> doDeployChain (@RequestBody String json) {
+    private ResponseEntity<?> doDeployChain (
+            @PathVariable(value = "repoName") String reponame,
+            @RequestBody String json) {
 
-        testService.doDeployChain(json);
+        testService.doDeployChain(reponame, json);
 
         return null;
     }
