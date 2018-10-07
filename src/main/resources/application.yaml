@@ -1,3 +1,5 @@
+
+
 spring:
   datasource:
     url: jdbc:postgresql://fuhrpark.zz-dev.de:5433/zzdevploy
@@ -10,6 +12,8 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+server:
+  port: 8089
 
 ---
 
