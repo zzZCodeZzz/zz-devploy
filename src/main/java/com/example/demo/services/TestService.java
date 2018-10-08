@@ -23,25 +23,26 @@ public class TestService {
     public void doDeployChain(String repoName, String json) {
 
         RepoEntity repoEntity =  repoEntityRepository.findByRepoName(repoName);
+        final String buildScript = repoEntity.getScript();
 
-        String buildScript = repoEntity.getScript();
+        new Thread(() -> {
+            File tmpFile;
 
-        File tmpFile;
-
-        try {
-            tmpFile = File.createTempFile("TMP", "JSON");
-            BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile));
-            bw.write(json);
-            bw.close();
-            String[] cmds={"/bin/sh","-c",buildScript +" < "+tmpFile.getAbsolutePath()};
-            Process p=Runtime.getRuntime().exec(cmds);
-            p.waitFor();
-
-            log.info(tmpFile.getAbsolutePath());
-        } catch (IOException e) {
-            log.error("error creating tmp file");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            try {
+                tmpFile = File.createTempFile("TMP", "JSON");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile));
+                bw.write(json);
+                bw.close();
+                String[] cmds = {"/bin/sh", "-c", buildScript + " < " + tmpFile.getAbsolutePath()};
+                Process p = Runtime.getRuntime().exec(cmds);
+                p.waitFor();
+                tmpFile.delete();
+                log.info(tmpFile.getAbsolutePath());
+            } catch (IOException e) {
+                log.error("error creating tmp file");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
