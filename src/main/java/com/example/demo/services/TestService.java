@@ -22,6 +22,10 @@ public class TestService {
 
     public void doDeployChain(String repoName, String json) {
 
+        RepoEntity repoEntity =  repoEntityRepository.findByRepoName(repoName);
+
+        String buildScript = repoEntity.getScript();
+
         File tmpFile;
 
         try {
@@ -29,23 +33,15 @@ public class TestService {
             BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile));
             bw.write(json);
             bw.close();
-            String[] cmds={"/bin/sh","-c","/home/fuhrpark-spring/webhook/gitHook.sh < "+tmpFile.getAbsolutePath()};
+            String[] cmds={"/bin/sh","-c",buildScript +" < "+tmpFile.getAbsolutePath()};
             Process p=Runtime.getRuntime().exec(cmds);
             p.waitFor();
+
             log.info(tmpFile.getAbsolutePath());
         } catch (IOException e) {
             log.error("error creating tmp file");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-        RepoEntity repoEntity =  repoEntityRepository.findByRepoName(repoName);
-
-        String scriptAsString = repoEntity.getScript();
-
-
-
-
     }
 }
